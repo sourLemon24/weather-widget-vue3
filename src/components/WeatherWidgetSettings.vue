@@ -29,7 +29,7 @@
         v-model="location"
         type="text"
         class="search-input"
-        placeholder="Добавьте место"
+        placeholder="add location"
       >
       <button 
         class="search-button"

@@ -16,7 +16,12 @@
     <div 
       :class="'loading' + (isShowSettings ? ' blur' : '')"
       v-else
-    > Загрузка... <br><span>Добавьте местоположение в настройках</span> </div>
+    > Loading... 
+      <br>
+      <span v-if="!locationsListFromStorage.length">
+        Add location in settings
+      </span>
+    </div>
     <div class="additional-info"></div>
     <nav-buttons
       :class="'nav-buttons' + (isShowSettings ? ' blur' : '')"
@@ -52,6 +57,7 @@ import NavButtons from './NavButtons.vue'
 
 const apiKey = 'c8db109bab94f6320274de2ebafa76fb'
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
+const locationsListFromStorage = ref(JSON.parse(localStorage.getItem('weatherList')) || [])
 
 const isShowSettings = ref(false)
 const toggleShowSettings = () => {
@@ -87,17 +93,17 @@ const getWeatherBySearch = async (v) => {
     const resp = await axios(`${ apiUrl }?q=${ v }&appid=${ apiKey }&units=metric`)
     if (resp?.data) {
       if (list.value.map(i => i.name).includes(resp.data.name)) {
-        alert('Местоположение уже в списке')
+        alert('such location already in the list')
       } else {
         list.value.push(resp.data)
       }
       if (list.value.length > 5) {
-        alert('Максимальное количество местоположений: 5')
+        alert('maximum locations count: 5')
         list.value.length = 5
       }
     }
   } catch {
-    alert('Местоположение не найдено')
+    alert('location not found')
   }
 }
 
@@ -125,7 +131,7 @@ const updTimer = setInterval(async () => {
 }, 5 * 60 * 1000)
 
 onMounted(async () => {
-  if (!JSON.parse(localStorage.getItem('weatherList'))?.length) {
+  if (!locationsListFromStorage.value?.length) {
     getLocation()
   } else {
     updateWeather()
