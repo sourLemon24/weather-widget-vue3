@@ -12,11 +12,10 @@
     >
       <div class="item-wrapper">
         <div class="item-label">
-          <span class="material-icons move-icon">menu</span>
+          <span class="material-icons move-icon">unfold_more</span>
           <span class="item-text">{{ `${item.name}, ${item.sys.country}` }}</span>
         </div>
         <button
-          v-if="index != 0"
           class="delete-button"
           @click="removeLocation(index)"
         >
@@ -30,6 +29,7 @@
         v-model="location"
         type="text"
         class="search-input"
+        placeholder="Добавьте место"
       >
       <button 
         class="search-button"
@@ -56,6 +56,10 @@ const props = defineProps({
     type: Array,
     require: true,
     default: () => []
+  },
+  currentDataIndex: {
+    type: Number,
+    default: 0,
   }
 })
 
@@ -68,6 +72,7 @@ const emit = defineEmits([
 const location = ref('')
 const getSearch = () => {
   emit('getSearch', location.value)
+  location.value = ''
 }
 const removeLocation = (index) => {
   emit('removeLocation', index)
@@ -111,7 +116,7 @@ const moveItem = (event, toIndex) => {
 }
 .move-icon {
   margin-right: 2px;
-  font-size: 1.4em;
+  font-size: 1em;
   cursor: pointer;
 }
 .item-label {

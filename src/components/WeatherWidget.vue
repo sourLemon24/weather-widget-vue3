@@ -5,13 +5,6 @@
         class="setting-button"
         @click="toggleShowSettings">
           <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span>
-      </button>    
-      <button
-        v-if="!isShowSettings"
-        class="right-button"
-        :disabled="list.length === 1"
-        @click="switchData()">
-          <span class="material-icons settings-icon">keyboard_arrow_right</span>
       </button>
     </div>
     <main-info
@@ -23,8 +16,14 @@
     <div 
       :class="'loading' + (isShowSettings ? ' blur' : '')"
       v-else
-    > Загрузка... </div>
-    <div class="additional-info"></div>    
+    > Загрузка... <br><span>Добавьте местоположение в настройках</span> </div>
+    <div class="additional-info"></div>
+    <nav-buttons
+      :class="'nav-buttons' + (isShowSettings ? ' blur' : '')"
+      :navChars="navChars"
+      :currentDataIndex="currentDataIndex"
+      @changeDataIndex="switchData($event)"
+    /> 
     <weather-widget-settings
       class="settings-menu"
       v-if="isShowSettings"
@@ -32,22 +31,24 @@
       @removeLocation="removeLocationFromList"
       @moveItem="moveItemsInList"
       :list="list"
+      :currentDataIndex="currentDataIndex"
     />
   </div>
 </template>
 
 <script>
 export default {
-  components: { MainInfo },
+  components: { MainInfo, NavButtons },
   name: 'WeatherWidget',
 }
 </script>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import WeatherWidgetSettings from './WeatherWidgetSettings.vue'
 import MainInfo from './MainInfo.vue'
 import axios from 'axios'
+import NavButtons from './NavButtons.vue'
 
 const apiKey = 'c8db109bab94f6320274de2ebafa76fb'
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
@@ -58,14 +59,11 @@ const toggleShowSettings = () => {
 }
 
 const currentDataIndex = ref(0)
-const switchData = () => {
-  if (currentDataIndex.value >= list.value.length - 1) {
-    currentDataIndex.value = 0
-  } else {
-    currentDataIndex.value++
-  }
+const switchData = (index) => {
+  currentDataIndex.value = index
   updateTime()
 }
+const navChars = computed(() => list.value.map(i => i.name.slice(0, 3).toUpperCase()))
 
 const updateTime = () => {
   if (list.value?.[currentDataIndex.value]) {
@@ -88,13 +86,18 @@ const getWeatherBySearch = async (v) => {
   try {
     const resp = await axios(`${ apiUrl }?q=${ v }&appid=${ apiKey }&units=metric`)
     if (resp?.data) {
-      if (list.value.length > 2) {
-        list.value.length = 2
+      if (list.value.map(i => i.name).includes(resp.data.name)) {
+        alert('Местоположение уже в списке')
+      } else {
+        list.value.push(resp.data)
       }
-      list.value.push(resp.data)
+      if (list.value.length > 5) {
+        alert('Максимальное количество местоположений: 5')
+        list.value.length = 5
+      }
     }
   } catch {
-    alert('Город не найден')
+    alert('Местоположение не найдено')
   }
 }
 
@@ -151,6 +154,7 @@ const getWeatherByCoords = async () => {
 }
 
 const removeLocationFromList = (index) => {
+  currentDataIndex.value = 0
   list.value.splice(index, 1)
 }
 const moveItemsInList = (fromIndex, toIndex) => {
@@ -158,6 +162,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   const locationToMove = newList.splice(fromIndex, 1)
   newList.splice(toIndex, 0, ...locationToMove)
   list.value = newList
+  currentDataIndex.value = 0
 }
 </script>
 
@@ -167,7 +172,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   border-radius: 10px;
   background-color: #82c7e7;
   width: 210px;
-  height: 108px;
+  height: 120px;
 }
 .buttons {
   position: absolute;
@@ -211,6 +216,9 @@ const moveItemsInList = (fromIndex, toIndex) => {
 .loading {
   padding-top: 40px
 }
+.loading span {
+  font-size: 0.7em;
+}
 .main-info {
   width: inherit;
   height: inherit;
@@ -218,5 +226,12 @@ const moveItemsInList = (fromIndex, toIndex) => {
 }
 .blur {
   filter: blur(4px)
+}
+.nav-buttons {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
 }
 </style>

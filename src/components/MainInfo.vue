@@ -1,5 +1,8 @@
 <template>
-  <div class="main-info-wrapper">
+  <div
+    v-if="Object.keys(weatherData).length"
+    class="main-info-wrapper"
+  >
     <div class="location">
       {{ `${weatherData.name}, ${weatherData.sys.country}` }}
     </div>
@@ -53,8 +56,10 @@ defineProps({
   padding-left: 5px;
 }
 .location {
+  position: relative;
+  z-index: 3;
   font-weight: bold;
-  max-width: 150px;
+  max-width: 180px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -71,15 +76,15 @@ defineProps({
 }
 .icon {
   position: absolute;
-  right: 17px;
-  top: -10px;
+  right: 30px;
+  top: 0px;
   width: 70px;
 }
 
 .indicators {
   max-height: 32px;
   position: absolute;
-  bottom: 8px;
+  bottom: 18px;
   padding-top: 3px;
   font-size: 0.8em;
   overflow: auto;
