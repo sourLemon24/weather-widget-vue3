@@ -12,7 +12,12 @@
     >
       <div class="item-wrapper">
         <div class="item-label">
-          <span class="material-icons move-icon">unfold_more</span>
+          <span 
+            class="material-icons move-icon"
+            :title="index === 0 ? 'drag and drop this icon for change list order' : ''"
+          >
+            unfold_more
+          </span>
           <span class="item-text">{{ `${item.name}, ${item.sys.country}` }}</span>
         </div>
         <button
@@ -29,14 +34,15 @@
         v-model="location"
         type="text"
         class="search-input"
-        placeholder="add location"
+        :placeholder="loading ? 'loading...' : 'add location'"
+        :disabled="loading"
       >
       <button 
         class="search-button"
         @click="getSearch"
+        :disabled="loading"
       >
         <span class="material-icons search-icon">search</span>
-        <span class="material-icons add-icon">add</span>
       </button>
     </div>
   </div>
@@ -60,6 +66,10 @@ const props = defineProps({
   currentDataIndex: {
     type: Number,
     default: 0,
+  },
+  loading: {
+    type: Boolean,
+    default: false,
   }
 })
 
@@ -89,16 +99,32 @@ const moveItem = (event, toIndex) => {
 </script>
 
 <style scoped>
-.label {
-  font-size: 0.8em;
-}
 .settings {
   position: absolute;
+}
+.label {
+  font-size: 0.8em;
 }
 .item-wrapper {
   margin-left: 5px;
   display: flex;
   align-items: center;
+}
+.item-label {
+  font-size: 0.8em;
+  display: flex;
+  align-items: center;
+}
+.move-icon {
+  margin-right: 2px;
+  font-size: 1em;
+  cursor: pointer;
+}
+.item-text {
+  max-width: 150px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .delete-button {
   background: transparent;
@@ -110,42 +136,39 @@ const moveItem = (event, toIndex) => {
   font-size: 0.8em;
   cursor: pointer;
 }
-.search-icon, .add-icon {
-  font-size: 1em;
-  cursor: pointer;
-}
-.move-icon {
-  margin-right: 2px;
-  font-size: 1em;
-  cursor: pointer;
-}
-.item-label {
-  font-size: 0.8em;
-  display: flex;
-  align-items: center;
-}
-.item-text {
-  max-width: 150px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
 .search-wrapper {
   position: absolute;
+  display: flex;
   padding-left: 5px;
   bottom: 3px;
-}
-.search-button {
-  margin-left: 2px;
-  background: #ffffff77;
-  border: none;
-  border-radius: 5px;
 }
 .search-input {
   background: #ffffff77;
   border: 1px solid;
   border-radius: 5px;
-  width: 155px;
+  width: 165px;
+}
+.search-button {
+  display: flex;
+  align-items: center;
+  margin-left: 3px;
+  background: #ffffff77;
+  border: none;
+  border-radius: 5px;
+}
+.search-icon {
+  font-size: 1em;
+}
+.search-button:hover {
+  background: #06b0ff99;
+  cursor: pointer;
+}
+.search-button:disabled{
+  cursor: not-allowed;
+  background: #ffffff99;
+}
+.search-input:disabled {
+  cursor: not-allowed;
 }
 
 </style>

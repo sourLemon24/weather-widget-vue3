@@ -41,7 +41,7 @@ const emit = defineEmits([
   font-size: 0.6em;
   padding-left: 3px;
 }
-.active {
+.nav-char.active {
   font-weight: bold;
 }
 </style>

@@ -1,12 +1,5 @@
 <template>
-  <div class="widget-wrapper">    
-    <div class="buttons">
-      <button 
-        class="setting-button"
-        @click="toggleShowSettings">
-          <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span>
-      </button>
-    </div>
+  <div class="widget-wrapper">
     <main-info
       :class="'main-info' + (isShowSettings ? ' blur' : '')"
       v-if="list.length"
@@ -16,20 +9,22 @@
     <div 
       :class="'loading' + (isShowSettings ? ' blur' : '')"
       v-else
-    > Loading... 
+    > 
+      <span v-if="loading">
+        Loading...
+      </span> 
       <br>
-      <span v-if="!locationsListFromStorage.length">
+      <span v-if="!locationsListFromStorage.length || (!loading && !list.length)">
         Add location in settings
       </span>
-    </div>
-    <div class="additional-info"></div>
-    <nav-buttons
-      :class="'nav-buttons' + (isShowSettings ? ' blur' : '')"
-      :navChars="navChars"
-      :currentDataIndex="currentDataIndex"
-      @changeDataIndex="switchData($event)"
-    /> 
-    <weather-widget-settings
+    </div>    
+    <button 
+      class="setting-button"
+      @click="toggleShowSettings"
+    >
+      <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span>
+    </button>
+    <settings
       class="settings-menu"
       v-if="isShowSettings"
       @getSearch="getWeatherBySearch"
@@ -37,6 +32,13 @@
       @moveItem="moveItemsInList"
       :list="list"
       :currentDataIndex="currentDataIndex"
+      :loading="loading"
+    />
+    <nav-buttons
+      :class="'nav-buttons' + (isShowSettings ? ' blur' : '')"
+      :navChars="navChars"
+      :currentDataIndex="currentDataIndex"
+      @changeDataIndex="switchData($event)"
     />
   </div>
 </template>
@@ -50,14 +52,16 @@ export default {
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import WeatherWidgetSettings from './WeatherWidgetSettings.vue'
+import Settings from './Settings.vue'
 import MainInfo from './MainInfo.vue'
 import axios from 'axios'
 import NavButtons from './NavButtons.vue'
 
 const apiKey = 'c8db109bab94f6320274de2ebafa76fb'
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
-const locationsListFromStorage = ref(JSON.parse(localStorage.getItem('weatherList')) || [])
+const localStorageKey = 'weatherList'
+const locationsListFromStorage = ref(JSON.parse(localStorage.getItem(localStorageKey)) || [])
+const loading = ref(false)
 
 const isShowSettings = ref(false)
 const toggleShowSettings = () => {
@@ -71,14 +75,6 @@ const switchData = (index) => {
 }
 const navChars = computed(() => list.value.map(i => i.name.slice(0, 3).toUpperCase()))
 
-const updateTime = () => {
-  if (list.value?.[currentDataIndex.value]) {
-  let date = new Date()
-  date.setHours(date.getUTCHours() + list.value?.[currentDataIndex.value]?.timezone / 3600)
-  time.value = new Intl.DateTimeFormat('ru-RU',{hour: 'numeric', minute: 'numeric', second: 'numeric'}).format(date)
-  }
-}
-
 const lat = ref(null)
 const lon = ref(null)
 const getLocation = () => {
@@ -88,9 +84,12 @@ const getLocation = () => {
     getWeatherByCoords()
   })
 }
+
 const getWeatherBySearch = async (v) => {
   try {
-    const resp = await axios(`${ apiUrl }?q=${ v }&appid=${ apiKey }&units=metric`)
+    loading.value = true
+    const resp = await fetchWeather(v)
+    loading.value = false
     if (resp?.data) {
       if (list.value.map(i => i.name).includes(resp.data.name)) {
         alert('such location already in the list')
@@ -104,14 +103,16 @@ const getWeatherBySearch = async (v) => {
     }
   } catch {
     alert('location not found')
+    loading.value = false
   }
 }
 
 const fetchWeather = (v) => axios(`${ apiUrl }?q=${ v }&appid=${ apiKey }&units=metric`)
 const updateWeather = async () => {
-    const storageOrder = JSON.parse(localStorage.getItem('weatherList'))
-    let requests = storageOrder.map(i => fetchWeather(i))
+    let requests = locationsListFromStorage.value.map(i => fetchWeather(i))
+    loading.value = true
     const responses = await Promise.all(requests)
+    loading.value = false
     responses.forEach(resp => {
       const index = list.value.findIndex(i => i.name === resp.data.name)
       if (index > -1) {
@@ -122,6 +123,14 @@ const updateWeather = async () => {
 }
 
 const time = ref('')
+const updateTime = () => {
+  if (list.value?.[currentDataIndex.value]) {
+    let date = new Date()
+    date.setHours(date.getUTCHours() + list.value?.[currentDataIndex.value]?.timezone / 3600)
+    time.value = new Intl.DateTimeFormat('ru-RU',{hour: 'numeric', minute: 'numeric', second: 'numeric'}).format(date)
+  }
+}
+
 const timer = setInterval(() => {
   updateTime()
 }, 1000)
@@ -147,13 +156,15 @@ const list = ref([])
 watch(
   list,
   (newV, oldV) => {
-    localStorage.setItem('weatherList', JSON.stringify(newV.map(i => i.name))) 
+    localStorage.setItem(localStorageKey, JSON.stringify(newV.map(i => i.name))) 
   },
   { deep: true }
 )
 
 const getWeatherByCoords = async () => {
+  loading.value = true
   const resp = await axios(`${ apiUrl }?lat=${ lat.value }&lon=${ lon.value }&appid=${ apiKey }&units=metric`)
+  loading.value = false
   if (resp?.data) {
     list.value.push(resp.data)
   }
@@ -163,6 +174,7 @@ const removeLocationFromList = (index) => {
   currentDataIndex.value = 0
   list.value.splice(index, 1)
 }
+
 const moveItemsInList = (fromIndex, toIndex) => {
   const newList = JSON.parse(JSON.stringify(list.value))
   const locationToMove = newList.splice(fromIndex, 1)
@@ -180,15 +192,21 @@ const moveItemsInList = (fromIndex, toIndex) => {
   width: 210px;
   height: 120px;
 }
-.buttons {
+.loading {
+  padding-top: 30px
+}
+.loading span {
+  font-size: 0.7em;
+}
+.main-info {
+  width: inherit;
+  height: inherit;
+  overflow: hidden;
+}
+.setting-button {
   position: absolute;
-  display: flex;
-  flex-direction: column;
   right: 0px;
   top: 0px;
-}
-.setting-button, .right-button {
-  position: relative;
   z-index: 1;
   border-width: 1px;
   border-radius: 5px;
@@ -196,13 +214,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   border: none;
   border-top-right-radius: 10px;
 }
-.right-button {
-  border-top-right-radius: 5px;
-}
-.right-button:disabled {
-  cursor: not-allowed;
-}
-.setting-button:hover, .right-button:hover {
+.setting-button:hover {
   background-color: #06b0ff57;
   cursor: pointer;
 }
@@ -218,17 +230,6 @@ const moveItemsInList = (fromIndex, toIndex) => {
   height: inherit;
   background-color: #1befd310;
   border-radius: 10px;
-}
-.loading {
-  padding-top: 40px
-}
-.loading span {
-  font-size: 0.7em;
-}
-.main-info {
-  width: inherit;
-  height: inherit;
-  overflow: hidden;
 }
 .blur {
   filter: blur(4px)
