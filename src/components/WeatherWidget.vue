@@ -207,7 +207,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   position: absolute;
   right: 0px;
   top: 0px;
-  z-index: 1;
+  z-index: 2;
   border-width: 1px;
   border-radius: 5px;
   background-color: inherit;
@@ -223,6 +223,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   color: #06b0ff99
 }
 .settings-menu {
+  z-index: 1;
   position: absolute;
   top: 0px;
   left: 0px;
