@@ -52,10 +52,10 @@ export default {
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import Settings from './Settings.vue'
-import MainInfo from './MainInfo.vue'
+import Settings from './Settings.ce.vue'
+import MainInfo from './MainInfo.ce.vue'
 import axios from 'axios'
-import NavButtons from './NavButtons.vue'
+import NavButtons from './NavButtons.ce.vue'
 
 const apiKey = 'c8db109bab94f6320274de2ebafa76fb'
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
