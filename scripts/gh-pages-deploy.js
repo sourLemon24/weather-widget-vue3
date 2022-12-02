@@ -1,5 +1,9 @@
 const execa = require("execa");
 const fs = require("fs");
+const util = require('util');
+require('util.promisify').shim();
+const rimraf = require("rimraf");
+const rmrf = util.promisify(rimraf);
 
 (async () => {
   try {
@@ -11,7 +15,7 @@ const fs = require("fs");
     await execa("git", ["--work-tree", folderName, "commit", "-m", "gh-pages"]);
     console.log("Pushing to gh-pages...");
     await execa("git", ["push", "origin", "HEAD:gh-pages", "--force"]);
-    await execa("rm", ["-r", folderName]);
+    await rmrf(folderName, { glob: false })
     await execa("git", ["checkout", "-f", "master"]);
     await execa("git", ["branch", "-D", "gh-pages"]);
     console.log("Successfully deployed");
