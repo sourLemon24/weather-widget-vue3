@@ -14,7 +14,7 @@
         <div class="item-label">
           <span 
             class="material-icons move-icon"
-            :title="index === 0 ? 'drag and drop this icon for change list order' : ''"
+            :title="index === 0 ? 'drag and drop this icon for changes list order' : ''"
           >
             unfold_more
           </span>
