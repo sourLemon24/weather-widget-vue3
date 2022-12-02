@@ -1,6 +1,12 @@
-import { defineCustomElement } from 'vue'
-import WeatherWidget from './components/WeatherWidget.ce.vue'
+import { defineAsyncComponent } from 'vue'
+import { defineCustomElement } from './defineCustomElementWithStyles'
+import App from './App.vue'
 
-const element = defineCustomElement(WeatherWidget)
-
-customElements.define('weather-widget', element)
+customElements.define(
+  'weather-widget',
+  defineCustomElement(App, {
+    globalComponents: {
+      WeatherWidget: defineAsyncComponent(() => import('@/components/WeatherWidget.vue')),
+    },
+  })
+)

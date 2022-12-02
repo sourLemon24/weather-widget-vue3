@@ -12,19 +12,17 @@
     >
       <div class="item-wrapper">
         <div class="item-label">
-          <span 
-            class="material-icons move-icon"
+        <img src="@/assets/unfold_more_black_24dp.svg"
+            class="move-icon"
             :title="index === 0 ? 'drag and drop this icon for changes list order' : ''"
-          >
-            unfold_more
-          </span>
+          />
           <span class="item-text">{{ `${item.name}, ${item.sys.country}` }}</span>
         </div>
         <button
           class="delete-button"
           @click="removeLocation(index)"
         >
-            <span class="material-icons delete-icon">delete</span>
+          <img src="@/assets/delete_black_24dp.svg" class="material-icons delete-icon"/>
         </button>
       </div>
     </div>
@@ -42,7 +40,7 @@
         @click="getSearch"
         :disabled="loading"
       >
-        <span class="material-icons search-icon">search</span>
+        <img src="@/assets/search_black_24dp.svg" class="search-icon"/>
       </button>
     </div>
   </div>
@@ -117,7 +115,7 @@ const moveItem = (event, toIndex) => {
 }
 .move-icon {
   margin-right: 2px;
-  font-size: 1em;
+  height: 12px;
   cursor: pointer;
 }
 .item-text {
@@ -133,7 +131,7 @@ const moveItem = (event, toIndex) => {
   padding: 0px;
 }
 .delete-icon {
-  font-size: 0.8em;
+  height: 12px;
   cursor: pointer;
 }
 .search-wrapper {
@@ -157,7 +155,7 @@ const moveItem = (event, toIndex) => {
   border-radius: 5px;
 }
 .search-icon {
-  font-size: 1em;
+  height: 12px;
 }
 .search-button:hover {
   background: #06b0ff99;

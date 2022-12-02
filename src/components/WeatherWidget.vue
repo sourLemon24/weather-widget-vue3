@@ -22,7 +22,11 @@
       class="setting-button"
       @click="toggleShowSettings"
     >
-      <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span>
+      <!-- <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span> -->
+      <div class="settings-icon">
+        <img v-if="isShowSettings" src="@/assets/close_black_24dp.svg"/>
+        <img v-else src="@/assets/settings_black_24dp.svg"/>
+      </div>
     </button>
     <settings
       class="settings-menu"
@@ -52,10 +56,10 @@ export default {
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import Settings from './Settings.ce.vue'
-import MainInfo from './MainInfo.ce.vue'
+import Settings from './Settings.vue'
+import MainInfo from './MainInfo.vue'
 import axios from 'axios'
-import NavButtons from './NavButtons.ce.vue'
+import NavButtons from './NavButtons.vue'
 
 const apiKey = 'c8db109bab94f6320274de2ebafa76fb'
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
@@ -219,7 +223,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   cursor: pointer;
 }
 .settings-icon {
-  font-size: 1.4em;
+  height: 24px;
   color: #06b0ff99
 }
 .settings-menu {
