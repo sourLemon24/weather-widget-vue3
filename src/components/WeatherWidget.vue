@@ -22,11 +22,7 @@
       class="setting-button"
       @click="toggleShowSettings"
     >
-      <!-- <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span> -->
-      <div class="settings-icon">
-        <img v-if="isShowSettings" src="@/assets/close_black_24dp.svg"/>
-        <img v-else src="@/assets/settings_black_24dp.svg"/>
-      </div>
+      <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span>
     </button>
     <settings
       class="settings-menu"
@@ -223,7 +219,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   cursor: pointer;
 }
 .settings-icon {
-  height: 24px;
+  font-size: 1.4em;
   color: #06b0ff99
 }
 .settings-menu {

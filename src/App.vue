@@ -12,6 +12,13 @@ export default {
 <script setup>
 import WeatherWidget from './components/WeatherWidget.vue'
 
+
+const linkNode = document.createElement('link');
+linkNode.rel = 'stylesheet';
+linkNode.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+document.head.appendChild(linkNode);
+
+
 </script>
 
 <style>
@@ -21,15 +28,6 @@ import WeatherWidget from './components/WeatherWidget.vue'
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-/* не работает */
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Material Icons'),
-    local('MaterialIcons-Regular'),
-    url(./assets/MaterialIcons-Regular.ttf) format('truetype'),
 }
 .material-icons {
   font-family: 'Material Icons';
@@ -54,6 +52,5 @@ import WeatherWidget from './components/WeatherWidget.vue'
 
   /* Support for IE. */
   font-feature-settings: 'liga';
-  /* не работает */
 }
 </style>
