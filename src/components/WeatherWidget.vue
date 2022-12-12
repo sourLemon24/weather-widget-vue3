@@ -57,7 +57,7 @@ import MainInfo from './MainInfo.vue'
 import axios from 'axios'
 import NavButtons from './NavButtons.vue'
 
-const apiKey = 'c8db109bab94f6320274de2ebafa76fb'
+const apiKey = process.env.VUE_APP_API_KEY
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
 const localStorageKey = 'weatherList'
 const locationsListFromStorage = ref(JSON.parse(localStorage.getItem(localStorageKey)) || [])
