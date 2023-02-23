@@ -91,6 +91,7 @@ defineProps({
   background-color: #ffffff99;
   scrollbar-color: #25386199 #ffffff99;
   scrollbar-width: 1px;
+  text-align: center;
 }
 .indicators::-webkit-scrollbar {
     width: 1px;

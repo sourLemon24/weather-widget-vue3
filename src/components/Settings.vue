@@ -104,6 +104,8 @@ const moveItem = (event, toIndex) => {
 }
 .label {
   font-size: 0.8em;
+  display: block;
+  text-align: center;
 }
 .item-wrapper {
   margin-left: 5px;
@@ -143,6 +145,7 @@ const moveItem = (event, toIndex) => {
   bottom: 3px;
 }
 .search-input {
+  padding-left: 5px;
   background: #ffffff77;
   border: 1px solid;
   border-radius: 5px;

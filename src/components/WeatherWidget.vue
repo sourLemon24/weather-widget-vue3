@@ -54,11 +54,9 @@ export default {
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import Settings from './Settings.vue'
 import MainInfo from './MainInfo.vue'
-import axios from 'axios'
 import NavButtons from './NavButtons.vue'
+import { getWeatherByCoords, fetchWeather } from '../api'
 
-const apiKey = process.env.VUE_APP_API_KEY
-const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
 const localStorageKey = 'weatherList'
 const locationsListFromStorage = ref(JSON.parse(localStorage.getItem(localStorageKey)) || [])
 const loading = ref(false)
@@ -75,13 +73,18 @@ const switchData = (index) => {
 }
 const navChars = computed(() => list.value.map(i => i.name.slice(0, 3).toUpperCase()))
 
-const lat = ref(null)
-const lon = ref(null)
-const getLocation = () => {
-  navigator.geolocation.getCurrentPosition(position => {
-    lat.value = position.coords.latitude
-    lon.value = position.coords.longitude
-    getWeatherByCoords()
+const getLocation = async () => {
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const lat = position.coords.latitude
+    const lon = position.coords.longitude
+    if (lat && lon) {
+      loading.value = true
+      const resp = await getWeatherByCoords({ lat, lon })
+      loading.value = false
+      if (resp?.data) {
+        list.value.push(resp.data)
+      }
+    }
   })
 }
 
@@ -107,7 +110,6 @@ const getWeatherBySearch = async (v) => {
   }
 }
 
-const fetchWeather = (v) => axios(`${ apiUrl }?q=${ v }&appid=${ apiKey }&units=metric`)
 const updateWeather = async () => {
     let requests = locationsListFromStorage.value.map(i => fetchWeather(i))
     loading.value = true
@@ -161,15 +163,6 @@ watch(
   { deep: true }
 )
 
-const getWeatherByCoords = async () => {
-  loading.value = true
-  const resp = await axios(`${ apiUrl }?lat=${ lat.value }&lon=${ lon.value }&appid=${ apiKey }&units=metric`)
-  loading.value = false
-  if (resp?.data) {
-    list.value.push(resp.data)
-  }
-}
-
 const removeLocationFromList = (index) => {
   currentDataIndex.value = 0
   list.value.splice(index, 1)
@@ -193,7 +186,8 @@ const moveItemsInList = (fromIndex, toIndex) => {
   height: 120px;
 }
 .loading {
-  padding-top: 30px
+  padding-top: 30px;
+  text-align: center;
 }
 .loading span {
   font-size: 0.7em;
