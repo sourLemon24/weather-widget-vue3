@@ -206,18 +206,16 @@ const moveItemsInList = (fromIndex, toIndex) => {
     right: 0px
     top: 0px
     z-index: 2
-    border-width: 1px
-    border-radius: 5px
     background-color: inherit
     border: none
     border-top-right-radius: 10px
-    &:hover 
-      background-color: #06b0ff57
-      cursor: pointer
   &-icon 
     padding-top: 4px
     font-size: 1.4em
-    color: #06b0ff99
+    color: grey
+    &:hover 
+      color: #0fbfff99
+      cursor: pointer
   &-menu 
     z-index: 1
     position: absolute
