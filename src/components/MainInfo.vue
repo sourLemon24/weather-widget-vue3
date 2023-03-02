@@ -46,62 +46,57 @@ defineProps({
 })
 
 </script>
-<style scoped>
-.main-info-wrapper {
-  position: relative;
+<style lang="sass" scoped>
+.main-info-wrapper 
+  position: relative
   padding-top: 5px
-}
-.location, .temp, .feels-like, .time {
-  text-align: left;
-  padding-left: 5px;
-}
-.location {
-  position: relative;
-  z-index: 3;
-  font-weight: bold;
-  max-width: 180px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.temp {
-  margin-top: 3px;
-}
-.feels-like {
-  margin-top: 1px;
-  font-size: 0.8em;
-}
-.time {
-  font-size: 0.6em;
-}
-.icon {
-  position: absolute;
-  right: 30px;
-  top: 0px;
-  width: 70px;
-}
 
-.indicators {
-  max-height: 32px;
-  position: absolute;
-  bottom: 18px;
-  padding-top: 3px;
-  font-size: 0.8em;
-  overflow: auto;
-  background-color: #ffffff99;
-  scrollbar-color: #25386199 #ffffff99;
-  scrollbar-width: 1px;
-  text-align: center;
-}
-.indicators::-webkit-scrollbar {
-    width: 1px;
-    height: 1px;
-    background-color: #ffffff99;
-}
-.indicators::-webkit-scrollbar-thumb {
-    background-color: #25386199;
-}
-.indicators::-webkit-scrollbar-thumb:hover {
-    background-color: #25386199;
-}
+.location, .time, .temp, .feels-like
+  padding-left: 5px
+
+.location 
+  position: relative
+  z-index: 3
+  font-weight: bold
+  max-width: 180px
+  text-overflow: ellipsis
+  overflow: hidden
+  white-space: nowrap
+
+.temp 
+  margin-top: 3px
+
+.feels-like 
+  margin-top: 1px
+  font-size: 0.8em
+
+.time 
+  font-size: 0.6em
+
+.icon 
+  position: absolute
+  right: 30px
+  top: 0px
+  width: 70px
+
+.indicators 
+  max-height: 32px
+  position: absolute
+  bottom: 18px
+  padding-top: 3px
+  font-size: 0.8em
+  overflow: auto
+  background-color: #ffffff99
+  scrollbar-color: #25386199 #ffffff99
+  scrollbar-width: 1px
+  text-align: center
+  &::-webkit-scrollbar 
+    width: 1px
+    height: 1px
+    background-color: #ffffff99
+  &::-webkit-scrollbar-thumb 
+    background-color: #25386199
+  &::-webkit-scrollbar-thumb:hover 
+    background-color: #25386199
+
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div class="widget-wrapper">
     <main-info
-      :class="'main-info' + (isShowSettings ? ' blur' : '')"
+      :class="'main-info' + (isShowSettings ? ' main-info_blur' : '')"
       v-if="list.length"
       :weatherData="list[currentDataIndex]"
       :time="time"
     />
     <div 
-      :class="'loading' + (isShowSettings ? ' blur' : '')"
+      :class="'loading' + (isShowSettings ? ' loading_blur' : '')"
       v-else
     > 
       <span v-if="loading">
@@ -19,7 +19,7 @@
       </span>
     </div>    
     <button 
-      class="setting-button"
+      class="settings-button"
       @click="toggleShowSettings"
     >
       <span class="material-icons settings-icon">{{ `${isShowSettings ? 'close' : 'settings'}` }}</span>
@@ -35,7 +35,7 @@
       :loading="loading"
     />
     <nav-buttons
-      :class="'nav-buttons' + (isShowSettings ? ' blur' : '')"
+      :class="'nav-buttons' + (isShowSettings ? ' nav-buttons_blur' : '')"
       :navChars="navChars"
       :currentDataIndex="currentDataIndex"
       @changeDataIndex="switchData($event)"
@@ -177,63 +177,64 @@ const moveItemsInList = (fromIndex, toIndex) => {
 }
 </script>
 
-<style scoped>
-.widget-wrapper {
-  position: relative;
-  border-radius: 10px;
-  background-color: #82c7e7;
-  width: 210px;
-  height: 120px;
-}
-.loading {
-  padding-top: 30px;
-  text-align: center;
-}
-.loading span {
-  font-size: 0.7em;
-}
-.main-info {
-  width: inherit;
-  height: inherit;
-  overflow: hidden;
-}
-.setting-button {
-  position: absolute;
-  right: 0px;
-  top: 0px;
-  z-index: 2;
-  border-width: 1px;
-  border-radius: 5px;
-  background-color: inherit;
-  border: none;
-  border-top-right-radius: 10px;
-}
-.setting-button:hover {
-  background-color: #06b0ff57;
-  cursor: pointer;
-}
-.settings-icon {
-  font-size: 1.4em;
-  color: #06b0ff99
-}
-.settings-menu {
-  z-index: 1;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: inherit;
-  height: inherit;
-  background-color: #1befd310;
-  border-radius: 10px;
-}
-.blur {
-  filter: blur(4px)
-}
-.nav-buttons {
-  width: 100%;
-  position: absolute;
-  bottom: 0px;
-  display: flex;
-  justify-content: center;
-}
+<style lang="sass" scoped>
+.widget-wrapper 
+  position: relative
+  border-radius: 10px
+  background-color: #82c7e7
+  width: 210px
+  height: 120px
+
+.loading 
+  padding-top: 30px
+  text-align: center
+  span 
+    font-size: 0.7em
+  &_blur 
+    filter: blur(4px)
+
+.main-info 
+  width: inherit
+  height: inherit
+  overflow: hidden
+  &_blur 
+    filter: blur(4px)
+
+.settings
+  &-button
+    position: absolute
+    right: 0px
+    top: 0px
+    z-index: 2
+    border-width: 1px
+    border-radius: 5px
+    background-color: inherit
+    border: none
+    border-top-right-radius: 10px
+    &:hover 
+      background-color: #06b0ff57
+      cursor: pointer
+  &-icon 
+    padding-top: 4px
+    font-size: 1.4em
+    color: #06b0ff99
+  &-menu 
+    z-index: 1
+    position: absolute
+    top: 0px
+    left: 0px
+    width: inherit
+    height: inherit
+    background-color: #1befd310
+    border-radius: 10px
+
+.nav-buttons 
+  width: 100%
+  position: absolute
+  bottom: 0px
+  display: flex
+  justify-content: center
+  &_blur
+    filter: blur(4px)
+
 </style>

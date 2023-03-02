@@ -32,16 +32,14 @@ const emit = defineEmits([
 ])
 </script>
 
-<style scoped>
-.nav-buttons-wrapper {
-  display: relative;
-}
-.nav-char {
-  cursor: pointer;
-  font-size: 0.6em;
-  padding-left: 3px;
-}
-.nav-char.active {
-  font-weight: bold;
-}
+<style lang="sass" scoped>
+.nav-buttons-wrapper 
+  display: relative
+
+.nav-char 
+  cursor: pointer
+  font-size: 0.6em
+  padding-left: 3px
+  &.active
+    font-weight: bold
 </style>
