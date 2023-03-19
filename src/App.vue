@@ -19,6 +19,15 @@ linkNode.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
 document.head.appendChild(linkNode);
 
 
+const siteWidth = 400 * 1.25;
+const scale = screen.width /siteWidth
+const meta = document.createElement('meta')
+meta.name = 'viewport'
+meta.content = `width=1280, initial-scale=1`
+document.head.prepend(meta)
+document.querySelector('meta[name="viewport"]').setAttribute('content', 'width='+siteWidth+', initial-scale='+scale+'')
+
+
 </script>
 
 <style>
