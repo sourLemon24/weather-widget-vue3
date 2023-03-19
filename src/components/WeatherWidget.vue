@@ -189,7 +189,7 @@ const moveItemsInList = (fromIndex, toIndex) => {
   padding-top: 30px
   text-align: center
   span 
-    font-size: 0.7em
+  font-size: 0.7em
   &_blur 
     filter: blur(4px)
 
@@ -234,5 +234,4 @@ const moveItemsInList = (fromIndex, toIndex) => {
   justify-content: center
   &_blur
     filter: blur(4px)
-
 </style>
