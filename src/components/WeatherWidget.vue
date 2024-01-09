@@ -54,13 +54,11 @@ export default {
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import Settings from './Settings.vue'
 import MainInfo from './MainInfo.vue'
-import axios from 'axios'
+import api from '@/api'
+import constants from '@/constants'
 import NavButtons from './NavButtons.vue'
 
-const apiKey = process.env.VUE_APP_API_KEY
-const apiUrl = 'https://api.openweathermap.org/data/2.5/weather'
-const localStorageKey = 'weatherList'
-const locationsListFromStorage = ref(JSON.parse(localStorage.getItem(localStorageKey)) || [])
+const locationsListFromStorage = ref(JSON.parse(localStorage.getItem(constants.localStorageKey)) || [])
 const loading = ref(false)
 
 const isShowSettings = ref(false)
@@ -88,7 +86,7 @@ const getLocation = () => {
 const getWeatherBySearch = async (v) => {
   try {
     loading.value = true
-    const resp = await fetchWeather(v)
+    const resp = await api.getWeatherByLocationName(v)
     loading.value = false
     if (resp?.data) {
       if (list.value.map(i => i.name).includes(resp.data.name)) {
@@ -107,9 +105,8 @@ const getWeatherBySearch = async (v) => {
   }
 }
 
-const fetchWeather = (v) => axios(`${ apiUrl }?q=${ v }&appid=${ apiKey }&units=metric`)
 const updateWeather = async () => {
-    let requests = locationsListFromStorage.value.map(i => fetchWeather(i))
+    let requests = locationsListFromStorage.value.map(i => api.getWeatherByLocationName(i))
     loading.value = true
     const responses = await Promise.all(requests)
     loading.value = false
@@ -156,14 +153,14 @@ const list = ref([])
 watch(
   list,
   (newV, oldV) => {
-    localStorage.setItem(localStorageKey, JSON.stringify(newV.map(i => i.name))) 
+    localStorage.setItem(constants.localStorageKey, JSON.stringify(newV.map(i => i.name))) 
   },
   { deep: true }
 )
 
 const getWeatherByCoords = async () => {
   loading.value = true
-  const resp = await axios(`${ apiUrl }?lat=${ lat.value }&lon=${ lon.value }&appid=${ apiKey }&units=metric`)
+  const resp = await api.getWeatherByCoords(lat.value, lon.value)
   loading.value = false
   if (resp?.data) {
     list.value.push(resp.data)
